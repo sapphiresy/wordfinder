@@ -1,2 +1,0 @@
-# wordfinder
-Teamproject1
