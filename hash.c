@@ -15,6 +15,9 @@ ListNode *hash_table[TABLE_SIZE]; // 전역변수 hash table!
 int hash_function(char *key)
 {
    unsigned long long int hash_index = 0;
+   if(strlen(key)<3){
+      return 0;
+   }
    while (*key)
       hash_index = 31 * hash_index + *key++; // 연산자 우선순위에 의해 key++ (다음문자) 후 key 실행 ++은 후위연산이므로 처음은 그냥뽑아냄
 
@@ -23,21 +26,24 @@ int hash_function(char *key)
 }
 
 void hash_chaining(int hash_idx, int line_num){
+   if(hash_idx == 0){
+      return;
+   }
 
-   if (hash_table[hash_idx] != NULL){
+   if (hash_table[hash_idx] != NULL){ //한개이상 연결 되어 있는 경우
       ListNode *temp = hash_table[hash_idx];
       ListNode *create_node;
       while (temp->link != NULL){
-         temp = temp->link; // 찾은 idx 에서 chaining 하러 올라감
+         temp = temp->link; // 찾은 idx 에서 제일 끝자리 찾아서 chaining 하러 올라감
       }
 
-      create_node = (ListNode*)malloc(sizeof(ListNode)); //올라가고 다시 malloc
+      create_node = (ListNode*)malloc(sizeof(ListNode)); //마지막 지점에서 malloc
       create_node->line_num = line_num;
       create_node->link = NULL;
       temp->link = create_node;
    }
-   else{
-      hash_table[hash_idx] = (ListNode*)malloc(sizeof(ListNode)); //올라가고 다시 malloc
+   else{ // 첫 연결일 경우
+      hash_table[hash_idx] = (ListNode*)malloc(sizeof(ListNode));
       hash_table[hash_idx]->line_num = line_num;
       hash_table[hash_idx]->link = NULL;
    }
@@ -65,9 +71,9 @@ void readfile(char op){
    char* ignorestr= (char*)malloc(sizeof(2)); //공간이 있어야 strcpy 가능..!
 
    if (op == 'y'){ // Case Sensitive
-      fp = fopen("./book_50KB.txt", "r");
+      fp = fopen("C:\\sample_data\\book_50KB.txt", "r");
       if (fp == NULL){
-         printf("txt 파일과 현재파일을 같은 디렉토리 안에 위치시켜주세요.\n");
+         printf("파일이 안보이네요!\n");
          return;
       }
       else{
@@ -98,13 +104,13 @@ void readfile(char op){
             if (fgets(buf, 256, fp) == NULL){
                break;
             }
-            string = strtok(buf, " ,./<>?`1234567890-=|~/n!@#$%%^&*()_+:;\"'{}[]\\\""); // 1.맨처음것을 strok 으로 자르고
+            string = strtok(buf, " ,./<>?`1234567890-=|~\n!@#$%%^&*()_+:;\"'{}[]\\\""); // 1.맨처음것을 strok 으로 자르고
 
             while (string != NULL){
                strcpy(ignorestr, string);
                strcpy(ignorestr, strlwr(ignorestr));
                hash_chaining(hash_function(ignorestr), line_cnt); // 2.체이닝
-               string = strtok(NULL, " ,./<>?`1234567890-=|~/n!@#$%%^&*()_+:;\"'{}[]\\\""); // 3.strok 다시 한 후 while loop으로..!
+               string = strtok(NULL, " ,./<>?`1234567890-=|~\n!@#$%%^&*()_+:;\"'{}[]\\\""); // 3.strok 다시 한 후 while loop으로..!
 
 
             }
@@ -127,20 +133,19 @@ char Case_sensitive(){
       printf("\n");
    }
 }
-
-
-int main(void){
+void loopcase(char op){
+   
    clock_t start_time, end_time;
    char word[50] = { 0 };
-   char op;
-
-   op = Case_sensitive();
-   readfile(op);
 
    if (op == 'y') {
       while (1){
          printf("검색 원하는 단어 입력 : ");
          scanf("%s", word);
+         if(strlen(word)<3){
+            printf("3글자 단어부터 검색됩니다.");
+            continue;
+         }
          start_time = clock();
          search_hash(word);
          end_time = clock();
@@ -153,6 +158,10 @@ int main(void){
       while (1){
          printf("검색 원하는 단어 입력 : ");
          scanf("%s", word);
+         if(strlen(word)<3){
+            printf("3글자 단어부터 검색됩니다.");
+            continue;
+         }
          start_time = clock();
          search_hash(strlwr(word));
          end_time = clock();
@@ -167,6 +176,16 @@ int main(void){
       exit(1);
    }
 
+}
+
+
+int main(void){
+
+   char op;
+
+   op = Case_sensitive();
+   readfile(op);
+   loopcase(op);
 
    system("pause");
 }
