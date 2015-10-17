@@ -75,10 +75,10 @@ void readfile(char op){
             if (fgets(buf, 256, fp) == NULL){
                break;
             }
-            string = strtok(buf, " ,./<>?`1234567890-=|~/n!@#$%%^&*()_+:;\"'{}[]\\"); // 1.맨처음것을 strok 으로 자르고
+            string = strtok(buf, " ,./<>?`1234567890-=|~\n!@#$%%^&*()_+:;\"'{}[]\\"); // 1.맨처음것을 strok 으로 자르고
             while (string != NULL){
                hash_chaining(hash_function(string), line_cnt); // 2.체이닝
-               string = strtok(NULL, " ,./<>?`1234567890-=|~/n!@#$%%^&*()_+:;\"'{}[]\\"); // 3.strok 다시 한 후 while loop으로..!
+               string = strtok(NULL, " ,./<>?`1234567890-=|~\n!@#$%%^&*()_+:;\"'{}[]\\"); // 3.strok 다시 한 후 while loop으로..!
             }
             line_cnt++;
             printf("현재 %d 줄을 읽고 있습니다. \n", line_cnt);
