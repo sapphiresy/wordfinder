@@ -71,9 +71,9 @@ void readfile(char op){
    char* ignorestr= (char*)malloc(sizeof(2)); //공간이 있어야 strcpy 가능..!
 
    if (op == 'y'){ // Case Sensitive
-      fp = fopen("C:\\sample_data\\book_50KB.txt", "r");
+      fp = fopen("./book_5MB.txt", "r");
       if (fp == NULL){
-         printf("파일이 안보이네요!\n");
+         printf("text file have to same location with this program\n");
          return;
       }
       else{
